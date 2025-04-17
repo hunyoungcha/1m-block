@@ -1,6 +1,7 @@
 #include "nfqnl.h"
 
-size_t NetFilterConf::hostname_;
+// size_t NetFilterConf::hostname_;
+std::unordered_set<std::string> NetFilterConf::hostnames_;
 
 
 NetFilterConf::NetFilterConf() {
@@ -13,15 +14,20 @@ NetFilterConf::~NetFilterConf() {
     system("iptables -F");
 }
 
-size_t NetFilterConf::Hashing(std::string &string) {
-	std::hash<std::string> hash_string;
-	size_t result = hash_string(string);
-	
-	return result;
-}
+void NetFilterConf::SetHostList(char* listFile) {
+	std::ifstream fs(listFile);
+	std::string line;
 
-void NetFilterConf::SetHostName(size_t HasedHostName) {
-	NetFilterConf::hostname_ = HasedHostName;
+	while(std::getline(fs,line)) {
+		std::stringstream ss(line);
+		std::string token;
+
+		std::getline(ss, token, ',');
+		std::getline(ss, token, ',');
+
+
+		hostnames_.insert(token);
+	}
 }
 
 u_int32_t NetFilterConf::pkt_filter(struct nfq_data *tb, int& NF_FLAGS) {
@@ -61,10 +67,10 @@ u_int32_t NetFilterConf::pkt_filter(struct nfq_data *tb, int& NF_FLAGS) {
 		}
 
 		if (!FoundHostName.empty()) {
-			if (NetFilterConf::Hashing(FoundHostName) == hostname_) {
+			if (hostnames_.find(FoundHostName) != hostnames_.end()) {
+				std::cout << "   | Blocked host\n" << std::endl;
 				NF_FLAGS = NF_DROP;
 			}
-			
 		}
 	}
 	return id;

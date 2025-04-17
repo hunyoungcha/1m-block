@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -5,11 +7,13 @@
 #include <linux/types.h>
 #include <linux/netfilter.h>		/* for NF_ACCEPT */
 #include <errno.h>
+#include <libnetfilter_queue/libnetfilter_queue.h>
+
 #include "packet_structs.h"
 #include <iostream>
-#include <functional>
-
-#include <libnetfilter_queue/libnetfilter_queue.h>
+#include <unordered_set>
+#include <fstream>
+#include <sstream>
 
 #define RUN_CONTINUE 1
 #define RUN_BREAK 2
@@ -24,18 +28,16 @@ class NetFilterConf {
         void SetNetFilterOpening();
         int RunNetFilter();
         void SetNetFilterEnding();
-        void SetHostName(char* arg);
 
-        static size_t Hashing(std::string &string);
-        static void SetHostName(size_t HashedHostname);
-        static size_t GetHostName();
+        static void SetHostList(char* listFile);
 
         private:
         static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data);
         static std::string FindHost(std::string httpData);
         static u_int32_t pkt_filter(struct nfq_data *tb, int& NF_FLAGS);
         
-        static size_t hostname_;
+        // static size_t hostname_;
+        static std::unordered_set<std::string> hostnames_;
 
         struct nfq_handle *h_;
         struct nfq_q_handle *qh_;

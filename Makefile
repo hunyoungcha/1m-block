@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra
 
 # Target executable name
-TARGET = nfqnl_test
+TARGET = 1m-block
 
 # Source files
 SOURCES = $(wildcard *.cpp)

@@ -10,8 +10,8 @@ void signalHandler(int signum) {
 }
 
 void usage() {
-    printf("syntax : netfilter-test <host>\n");
-    printf("sample : netfilter-test test.gilgil.net");
+    printf("syntax : 1m-block <site list file>\n");
+    printf("sample : 1m-block top-1m.txt");
 }
 
 int main(int argc, char *argv[]) {
@@ -22,9 +22,7 @@ int main(int argc, char *argv[]) {
     signal(SIGINT, signalHandler);
     NetFilterConf NFConf;
 
-    std::string HostName = argv[1];
-    size_t HashedHostname = NetFilterConf::Hashing(HostName);
-    NetFilterConf::SetHostName(HashedHostname);
+    NetFilterConf::SetHostList(argv[1]);
 
     NFConf.SetNetFilterOpening();    
 
