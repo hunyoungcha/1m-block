@@ -17,8 +17,8 @@
 
 #define RUN_CONTINUE 1
 #define RUN_BREAK 2
-#define HTTP 80
-#define TCP 0x06
+#define SUCCESS_SET_HOSTLIST 0
+#define FILE_NOT_OPEN 1
 
 class NetFilterConf {
     public:
@@ -29,7 +29,7 @@ class NetFilterConf {
         int RunNetFilter();
         void SetNetFilterEnding();
 
-        static void SetHostList(char* listFile);
+        static int SetHostList(char* listFile);
 
         private:
         static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *nfa, void *data);

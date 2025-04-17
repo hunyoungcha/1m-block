@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     signal(SIGINT, signalHandler);
     NetFilterConf NFConf;
 
-    NetFilterConf::SetHostList(argv[1]);
+    if (NetFilterConf::SetHostList(argv[1])) { return 1; }
 
     NFConf.SetNetFilterOpening();    
 

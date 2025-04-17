@@ -1,6 +1,9 @@
 #pragma once
 #include "ip.h"
 
+#define HTTP 80
+#define TCP 0x06
+
 #pragma pack(push, 1)
 
 struct IpHdr {

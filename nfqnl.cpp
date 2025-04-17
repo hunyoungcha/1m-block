@@ -14,9 +14,11 @@ NetFilterConf::~NetFilterConf() {
     system("iptables -F");
 }
 
-void NetFilterConf::SetHostList(char* listFile) {
+int NetFilterConf::SetHostList(char* listFile) {
 	std::ifstream fs(listFile);
 	std::string line;
+
+	if (!fs.is_open()) { return FILE_NOT_OPEN; }
 
 	while(std::getline(fs,line)) {
 		std::stringstream ss(line);
@@ -27,11 +29,13 @@ void NetFilterConf::SetHostList(char* listFile) {
 
 
 		hostnames_.insert(token);
-	}
+	}	
+	fs.close();
+	return SUCCESS_SET_HOSTLIST;
 }
 
 u_int32_t NetFilterConf::pkt_filter(struct nfq_data *tb, int& NF_FLAGS) {
-	int id = 0;
+	u_int32_t id = 0;
 	struct nfqnl_msg_packet_hdr *ph;
 	int ret;
 	std::string FoundHostName ;
